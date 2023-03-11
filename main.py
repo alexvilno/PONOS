@@ -1,57 +1,27 @@
 import os
 import random
 import datetime
-import win32com.client as office
+import win32com.client as ponos
 
-from load_data import import_sheets, import_config, import_sheet
-from generate_gongratulation import generate_triad, generate_holiday, generate_congrat
+from load_data import load_data
+from generate_gongratulation import generate_triad, generate_holiday, generate_congrats
 
 excel_data = 'data.xls'
 config_sheet_name = 'config'
 addressates = 'addressates'
 
-sheets = import_sheets(excel_data)
-print(sheets)
+sheets, config, congrats1, congrats2, congrats3 = load_data(excel_data, config_sheet_name)
 
-config = import_config(sheets[config_sheet_name])
-print(config.text_box_height, config.text_box_width)
-
-congrats_list = config.congrats.split(",")
-print(congrats_list)
-
-inx1 = random.randint(0, len(congrats_list) - 1)
-inx2 = random.randint(0, len(congrats_list) - 1)
-inx3 = random.randint(0, len(congrats_list) - 1)
-
-while (inx1 == inx2 or inx1 == inx3 or inx2 == inx3):
-    inx1 = random.randint(0, len(congrats_list) - 1)
-    inx2 = random.randint(0, len(congrats_list) - 1)
-    inx3 = random.randint(0, len(congrats_list) - 1)
-
-print(inx1, inx2, inx3)
-
-congrats1 = import_sheet(sheets[congrats_list[inx1]])
-congrats2 = import_sheet(sheets[congrats_list[inx2]])
-congrats3 = import_sheet(sheets[congrats_list[inx3]])
-print(congrats1, congrats2, congrats3)
-
-holidays = import_sheet(sheets[config.holidays])
-print(holidays)
-
-triad = generate_triad(congrats1, congrats2, congrats3)
-print(triad)
-
-holiday = generate_holiday(holidays)
-print(generate_congrat('Виктор', holiday, triad))
+congratulations = generate_congrats()
 
 if not os.path.exists(config.out):
     os.mkdir(config.out)
 
-word = office.gencache.EnsureDispatch('Word.Application')
+word = ponos.gencache.EnsureDispatch('Word.Application')
 for addressat in import_sheet(sheets[config.addressates]):
     holiday = generate_holiday(holidays)
     triad = generate_triad(congrats1, congrats2, congrats3)
-    congrat = generate_congrat(addressat,holiday,triad)
+    congrat = generate_congrats(addressat, holiday, triad, )
     doc = word.Documents.Open(f'{os.getcwd()}\\{config.template}')
 
     try:

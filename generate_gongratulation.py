@@ -11,6 +11,9 @@ def generate_holiday(holidays: list):
     inx = random.randint(0, len(holidays) - 1)
     return holidays[inx]
 
-def generate_congrat(name, holiday, triad):
-    congrat = 'Дорогой(ая) ' + name + '! поздравляю тебя с ' + holiday + '! Желаю тебе ' + triad + '!'
+def generate_congrats(congrats1: list, congrats2: list, congrats3: list, holidays,config: Config):
+
+    triad = generate_triad(congrats1, congrats2, congrats3)
+    holiday = generate_holiday(holidays)
+    congrat = 'поздравляю тебя с ' + holiday + '! Желаю тебе ' + triad + '!'
     return congrat
